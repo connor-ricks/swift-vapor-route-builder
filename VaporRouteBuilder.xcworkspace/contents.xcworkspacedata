@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <Group
+      location = "group:.github/workflows"
+      name = "workflows">
+      <FileRef
+         location = "group:swiftlint.yaml">
+      </FileRef>
+      <FileRef
+         location = "group:test.yaml">
+      </FileRef>
+   </Group>
+   <FileRef
+      location = "group:">
+   </FileRef>
+   <Group
+      location = "group:Scripts"
+      name = "Scripts">
+      <FileRef
+         location = "group:setup.sh">
+      </FileRef>
+      <Group
+         location = "group:Hooks"
+         name = "Hooks">
+         <FileRef
+            location = "group:commit-msg">
+         </FileRef>
+         <FileRef
+            location = "group:pre-commit">
+         </FileRef>
+      </Group>
+   </Group>
+</Workspace>

@@ -1,0 +1,10 @@
+.DS_Store
+.build
+.swiftpm
+.env
+xcuserdata/
+DerivedData/
+Package.resolved
+
+
+.pre-commit-unstaged-patch

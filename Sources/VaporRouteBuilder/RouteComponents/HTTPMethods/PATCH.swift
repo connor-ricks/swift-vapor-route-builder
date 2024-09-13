@@ -44,7 +44,7 @@ public struct PATCH: RouteComponent {
     ///   - use: The closure handler for incoming requests.
     @inlinable
     public init<Path: Collection, Response: ResponseEncodable>(
-        path: Path,
+        _ path: Path,
         strategy: HTTPBodyStreamStrategy = .collect,
         use: @Sendable @escaping (Request) throws -> Response
     ) where Path.Element == PathComponent {
@@ -59,7 +59,7 @@ public struct PATCH: RouteComponent {
     ///   - use: The closure handler for incoming requests.
     @inlinable
     public init<Path: Collection, Response: AsyncResponseEncodable>(
-        path: Path,
+        _ path: Path,
         strategy: HTTPBodyStreamStrategy = .collect,
         use: @Sendable @escaping (Request) async throws -> Response
     ) where Path.Element == PathComponent {
@@ -74,7 +74,7 @@ public struct PATCH: RouteComponent {
     ///   - use: The closure handler for incoming requests.
     @inlinable
     public init<Response: ResponseEncodable>(
-        path: PathComponent...,
+        _ path: PathComponent...,
         strategy: HTTPBodyStreamStrategy = .collect,
         use: @Sendable @escaping (Request) throws -> Response
     ) {
@@ -89,7 +89,7 @@ public struct PATCH: RouteComponent {
     ///   - use: The closure handler for incoming requests.
     @inlinable
     public init<Response: AsyncResponseEncodable>(
-        path: PathComponent...,
+        _ path: PathComponent...,
         strategy: HTTPBodyStreamStrategy = .collect,
         use: @Sendable @escaping (Request) async throws -> Response
     ) {

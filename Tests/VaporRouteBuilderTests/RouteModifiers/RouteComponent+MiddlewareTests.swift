@@ -1,3 +1,4 @@
+//
 // MIT License
 //
 // Copyright (c) 2024 Connor Ricks
@@ -25,26 +26,20 @@ import Vapor
 import XCTVapor
 @testable import VaporRouteBuilder
 
-@Suite("HTTPMethodTests Tests") struct HTTPMethodTests {
-    @Test func test() async throws {
-        let get = GET("A") { _ in "" }.body as! Route
-        #expect(get.method == .GET)
-        #expect(get.path == ["A"])
+@Suite("RouteComponentMiddleware Tests") struct RouteComponentMiddlewareTests {
+    @Test func test_middlewareModifier_whenAttached_doesCorrectlyWrap() async throws {
+        let foo = TestMiddleware(name: "foo")
+        let bar = TestMiddleware(name: "bar")
 
-        let post = POST("A") { _ in "" }.body as! Route
-        #expect(post.method == .POST)
-        #expect(post.path == ["A"])
-
-        let patch = PATCH("A") { _ in "" }.body as! Route
-        #expect(patch.method == .PATCH)
-        #expect(patch.path == ["A"])
-
-        let put = PUT("A") { _ in "" }.body as! Route
-        #expect(put.method == .PUT)
-        #expect(put.path == ["A"])
-
-        let delete = DELETE("A") { _ in "" }.body as! Route
-        #expect(delete.method == .DELETE)
-        #expect(delete.path == ["A"])
+        try await Application.testing(content: {
+            Group(middleware: foo) {
+                Route.testing(name: "A")
+                    .middleware(bar)
+                Route.testing(name: "B")
+            }
+        }) { app in
+            try await app.testing(.GET, "/A", assertMiddleware: [foo, bar])
+            try await app.testing(.GET, "/B", assertMiddleware: [foo])
+        }
     }
 }

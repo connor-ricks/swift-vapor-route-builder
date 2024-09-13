@@ -1,3 +1,4 @@
+//
 // MIT License
 //
 // Copyright (c) 2024 Connor Ricks
@@ -20,31 +21,32 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import Testing
 import Vapor
-import XCTVapor
-@testable import VaporRouteBuilder
 
-@Suite("HTTPMethodTests Tests") struct HTTPMethodTests {
-    @Test func test() async throws {
-        let get = GET("A") { _ in "" }.body as! Route
-        #expect(get.method == .GET)
-        #expect(get.path == ["A"])
+// MARK: - MiddlewareModifier
 
-        let post = POST("A") { _ in "" }.body as! Route
-        #expect(post.method == .POST)
-        #expect(post.path == ["A"])
+/// A route modifier that wraps its content in the provided middleware.
+private struct MiddlewareModifier: RouteModifier {
 
-        let patch = PATCH("A") { _ in "" }.body as! Route
-        #expect(patch.method == .PATCH)
-        #expect(patch.path == ["A"])
+    // MARK: Properties
 
-        let put = PUT("A") { _ in "" }.body as! Route
-        #expect(put.method == .PUT)
-        #expect(put.path == ["A"])
+    /// The middleware to add to the content.
+    let middleware: [Middleware]
 
-        let delete = DELETE("A") { _ in "" }.body as! Route
-        #expect(delete.method == .DELETE)
-        #expect(delete.path == ["A"])
+    // MARK: Body
+
+    func body(content: RouteContent) -> some RouteComponent {
+        Group(middleware: middleware) {
+            content
+        }
+    }
+}
+
+// MARK: - RouteComponent + Middleware
+
+extension RouteComponent {
+    /// Modifies the route component by wrapping it in the provided `Middleware`.
+    public func middleware(_ middleware: any Middleware...) -> some RouteComponent {
+        modifier(MiddlewareModifier(middleware: middleware))
     }
 }

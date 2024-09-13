@@ -20,50 +20,51 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// import SwiftUI
-//
-// public protocol MyViewModifier<Body> {
-//    associatedtype Body: View
-//
-//    @ViewBuilder
-//    func body(content: Content) -> Body
-//
-//    typealias Content = ProxyView<Self>
-// }
-//
-// public struct ProxyView<Value> {
-//    let content: AnyView
-//    init(_ content: some View) { self.content = AnyView(content) }
-// }
-//
-// struct TestModifier: MyViewModifier {
-//    func body(content: Content) -> some View {
-//        VStack {
-//            content.content
-//        }
-//    }
-// }
+import Vapor
 
-// import Vapor
-//
-// public protocol MyViewModifier<Body> {
-//    associatedtype Body: RouteComponent
-//
-//    @RouteBuilder
-//    func body(content: Content) -> Body
-//
-//    typealias Content = ProxyView<Self>
-// }
-//
-// public struct ProxyView<Value> {
-//    let content: AnyRouteComponent
-//    init(_ content: some RouteComponent) { self.content = AnyRouteComponent(content) }
-// }
-//
-// struct TestModifier: MyViewModifier {
-//    func body(content: Content) -> some RouteComponent {
-//        Group {
-//            content.content
-//        }
-//    }
-// }
+// MARK: - RouteModifier
+
+/// A modifier that you apply to a route component or another route modifier, producing a different version of the original value.
+///
+/// Adopt the `RouteModifier` protocol when you want to create a reusable modifier that you can apply to any route component.
+public protocol RouteModifier<Body> {
+    associatedtype Body: RouteComponent
+
+    @RouteBuilder
+    func body(content: RouteContent) -> Body
+
+    typealias RouteContent = RouteModifierContent<Self>
+}
+
+// MARK: - RouteModifierContent
+
+public struct RouteModifierContent<Value>: RouteComponent {
+
+    // MARK: Properties
+
+    @usableFromInline
+    let content: AnyRouteComponent
+
+    // MARK: Initializers
+
+    @inlinable
+    init(_ content: some RouteComponent) {
+        self.content = AnyRouteComponent(content)
+    }
+
+    // MARK: Body
+
+    public var body: some RouteComponent {
+        content
+    }
+}
+
+// MARK: - RouteComponent + Modifier
+
+extension RouteComponent {
+    /// Applies a modifier to a route component and returns a new route component.
+    @inlinable
+    public func modifier<Modifier: RouteModifier>(_ modifier: Modifier) -> some RouteComponent {
+        modifier.body(content: RouteModifierContent(self))
+    }
+}

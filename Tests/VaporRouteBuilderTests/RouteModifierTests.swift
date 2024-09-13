@@ -1,3 +1,4 @@
+//
 // MIT License
 //
 // Copyright (c) 2024 Connor Ricks
@@ -25,26 +26,40 @@ import Vapor
 import XCTVapor
 @testable import VaporRouteBuilder
 
-@Suite("HTTPMethodTests Tests") struct HTTPMethodTests {
-    @Test func test() async throws {
-        let get = GET("A") { _ in "" }.body as! Route
-        #expect(get.method == .GET)
-        #expect(get.path == ["A"])
+@Suite("RouteModifier Tests") struct RouteModifierTests {
+    @Test func test_routeModifier_whenAddedToContent_matchesExpectations() async throws {
+        struct AddBModifier: RouteModifier {
+            func body(content: RouteContent) -> some RouteComponent {
+                Group {
+                    Route.testing(name: "B")
+                    content
+                }
+            }
+        }
 
-        let post = POST("A") { _ in "" }.body as! Route
-        #expect(post.method == .POST)
-        #expect(post.path == ["A"])
+        try await Application.testing(content: {
+            Route.testing(name: "A")
+                .modifier(AddBModifier())
+        }) { app in
+            try await app.testing(.GET, "/A")
+            try await app.testing(.GET, "/B")
+            #expect(app.routes.all.count == 2)
+        }
 
-        let patch = PATCH("A") { _ in "" }.body as! Route
-        #expect(patch.method == .PATCH)
-        #expect(patch.path == ["A"])
+        struct AddParentModifier: RouteModifier {
+            func body(content: RouteContent) -> some RouteComponent {
+                Group(path: "parent") {
+                    content
+                }
+            }
+        }
 
-        let put = PUT("A") { _ in "" }.body as! Route
-        #expect(put.method == .PUT)
-        #expect(put.path == ["A"])
-
-        let delete = DELETE("A") { _ in "" }.body as! Route
-        #expect(delete.method == .DELETE)
-        #expect(delete.path == ["A"])
+        try await Application.testing(content: {
+            Route.testing(name: "foo")
+                .modifier(AddParentModifier())
+        }) { app in
+            try await app.testing(.GET, "/parent/foo")
+            #expect(app.routes.all.count == 1)
+        }
     }
 }

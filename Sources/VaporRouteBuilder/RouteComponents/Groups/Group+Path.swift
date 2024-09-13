@@ -23,7 +23,7 @@
 import Vapor
 
 extension Group {
-    /// Creates a group of content under a path.
+    /// Groups content under a provided path.
     ///
     /// See ``Group.init(path:content:)`` for more info.
     public struct Path<Path: Collection<PathComponent>>: RouteComponent {

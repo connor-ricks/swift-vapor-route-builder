@@ -153,6 +153,24 @@ app.register {
 }
 ```
 
+### Interoperability
+
+For existing vapor applications, it may be unreasonable or unwieldly to rewrite your entire routing stack in one go. You can start with replacing smaller sections of your route definitions by registering a `RouteComponent` on any `RoutesBuilder` in your application.
+
+
+```swift
+let users = app.grouped("users")
+users.get(":user") { ... }
+users.get("popular") { ... }
+...
+
+let books = app.grouped("books")
+books.register { 
+    GET("latest") { ... }
+    GET("trending") { ... }
+}
+```
+
 ### RouteModifiers
 
 - Currently undocumented.

@@ -21,16 +21,12 @@
 // SOFTWARE.
 
 import Vapor
-import VaporRouteBuilder
 
-extension Application {
-    static func testing<C: RouteComponent>(
-        @RouteBuilder content: () -> C,
-        _ body: (Application) async throws -> Void
-    ) async throws {
-        let app = try await Application.make(.testing)
-        try app.routes.register(content)
-        try await body(app)
-        try await app.asyncShutdown()
+extension RoutesBuilder {
+    /// Registers the provided content to this router.
+    /// - parameters:
+    ///     - content: The `RouteComponent` to register.
+    public func register<C: RouteComponent>(@RouteBuilder _ content: () -> C) throws {
+        try content().boot(routes: self)
     }
 }

@@ -27,7 +27,7 @@ import PackageDescription
 let package = Package(
     name: "swift-vapor-route-builder",
     platforms: [
-        .macOS(.v15)
+        .macOS(.v10_15)
     ],
     products: [
         .library(name: "VaporRouteBuilder", targets: ["VaporRouteBuilder"])

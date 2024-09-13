@@ -22,15 +22,15 @@
 
 import Testing
 import Vapor
-import XCTVapor
 @testable import VaporRouteBuilder
+import XCTVapor
 
 @Suite("Optional Tests") struct OptionalTests {
     @Test func test_optional_whenNone_producesNoRoutes() async throws {
         try await Application.testing(content: {
             Optional<Route>.none
         }) { app in
-            #expect(app.routes.all.count == 0)
+            #expect(app.routes.all.isEmpty)
         }
     }
 

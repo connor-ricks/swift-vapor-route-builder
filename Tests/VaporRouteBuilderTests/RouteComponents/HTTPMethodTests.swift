@@ -22,29 +22,31 @@
 
 import Testing
 import Vapor
-import XCTVapor
 @testable import VaporRouteBuilder
+import XCTVapor
 
 @Suite("HTTPMethodTests Tests") struct HTTPMethodTests {
+    // swiftlint:disable force_cast
     @Test func test() async throws {
-        let get = GET(path: "A") { _ in "" }.body as! Route
+        let get = GET("A") { _ in "" }.body as! Route
         #expect(get.method == .GET)
         #expect(get.path == ["A"])
 
-        let post = POST(path: "A") { _ in "" }.body as! Route
+        let post = POST("A") { _ in "" }.body as! Route
         #expect(post.method == .POST)
         #expect(post.path == ["A"])
 
-        let patch = PATCH(path: "A") { _ in "" }.body as! Route
+        let patch = PATCH("A") { _ in "" }.body as! Route
         #expect(patch.method == .PATCH)
         #expect(patch.path == ["A"])
 
-        let put = PUT(path: "A") { _ in "" }.body as! Route
+        let put = PUT("A") { _ in "" }.body as! Route
         #expect(put.method == .PUT)
         #expect(put.path == ["A"])
 
-        let delete = DELETE(path: "A") { _ in "" }.body as! Route
+        let delete = DELETE("A") { _ in "" }.body as! Route
         #expect(delete.method == .DELETE)
         #expect(delete.path == ["A"])
     }
+    // swiftlint:enable force_cast
 }

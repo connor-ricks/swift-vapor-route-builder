@@ -22,8 +22,8 @@
 
 import Testing
 import Vapor
-import XCTVapor
 @testable import VaporRouteBuilder
+import XCTVapor
 
 @Suite("Array Tests") struct ArrayTests {
     @Test func test_array_withOneComponent_producesExpectedRoutes() async throws {
@@ -40,7 +40,7 @@ import XCTVapor
             [
                 Route.testing(name: "A"),
                 Route.testing(name: "B"),
-                Route.testing(name: "C")
+                Route.testing(name: "C"),
             ]
         }) { app in
             try await app.testing(.GET, "/A")

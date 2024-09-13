@@ -1,3 +1,4 @@
+//
 // MIT License
 //
 // Copyright (c) 2024 Connor Ricks
@@ -22,50 +23,30 @@
 
 import Vapor
 
-extension Group {
-    /// Groups content under a provided path.
-    ///
-    /// See ``Group.init(path:content:)`` for more info.
-    public struct Path<Path: Collection<PathComponent>>: RouteComponent {
+// MARK: - MiddlewareModifier
 
-        // MARK: Properties
+/// A route modifier that wraps its content in the provided middleware.
+private struct MiddlewareModifier: RouteModifier {
 
-        @usableFromInline
-        let path: Path
+    // MARK: Properties
 
-        @usableFromInline
-        let content: Content
+    /// The middleware to add to the content.
+    let middleware: [Middleware]
 
-        // MARK: Initializers
+    // MARK: Body
 
-        @inlinable
-        public init(
-            path: PathComponent...,
-            @RouteBuilder content: () -> Content
-        ) where Path == [PathComponent] {
-            self.path = path
-            self.content = content()
+    func body(content: RouteContent) -> some RouteComponent {
+        Group(middleware: middleware) {
+            content
         }
+    }
+}
 
-        @inlinable
-        public init(
-            path: Path,
-            @RouteBuilder content: () -> Content
-        ) {
-            self.path = path
-            self.content = content()
-        }
+// MARK: - RouteComponent + Middleware
 
-        // MARK: Boot
-
-        @inlinable
-        public func boot(routes: any RoutesBuilder) throws {
-            let routes = path.isEmpty ? routes : routes.grouped(Array(path))
-            if let route = content as? Route {
-                routes.add(route)
-            } else {
-                try routes.register(collection: content)
-            }
-        }
+extension RouteComponent {
+    /// Modifies the route component by wrapping it in the provided `Middleware`.
+    public func middleware(_ middleware: any Middleware...) -> some RouteComponent {
+        modifier(MiddlewareModifier(middleware: middleware))
     }
 }

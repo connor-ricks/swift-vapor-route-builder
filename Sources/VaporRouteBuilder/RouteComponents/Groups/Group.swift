@@ -205,7 +205,6 @@ public struct Group<Content: RouteComponent>: RouteComponent {
     public func boot(routes: any RoutesBuilder) throws {
         try content.boot(routes: routes)
     }
-
 }
 
 // MARK: - RouteComponents + Group

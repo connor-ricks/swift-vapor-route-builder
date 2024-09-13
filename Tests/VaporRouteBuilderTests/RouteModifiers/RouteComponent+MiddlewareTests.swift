@@ -1,3 +1,4 @@
+//
 // MIT License
 //
 // Copyright (c) 2024 Connor Ricks
@@ -20,52 +21,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+import Testing
 import Vapor
+@testable import VaporRouteBuilder
+import XCTVapor
 
-extension Group {
-    /// Groups content under a provided path.
-    ///
-    /// See ``Group.init(path:content:)`` for more info.
-    public struct Path<Path: Collection<PathComponent>>: RouteComponent {
+@Suite("RouteComponentMiddleware Tests") struct RouteComponentMiddlewareTests {
+    @Test func test_middlewareModifier_whenAttached_doesCorrectlyWrap() async throws {
+        let foo = TestMiddleware(name: "foo")
+        let bar = TestMiddleware(name: "bar")
 
-        // MARK: Properties
-
-        @usableFromInline
-        let path: Path
-
-        @usableFromInline
-        let content: Content
-
-        // MARK: Initializers
-
-        @inlinable
-        public init(
-            path: PathComponent...,
-            @RouteBuilder content: () -> Content
-        ) where Path == [PathComponent] {
-            self.path = path
-            self.content = content()
-        }
-
-        @inlinable
-        public init(
-            path: Path,
-            @RouteBuilder content: () -> Content
-        ) {
-            self.path = path
-            self.content = content()
-        }
-
-        // MARK: Boot
-
-        @inlinable
-        public func boot(routes: any RoutesBuilder) throws {
-            let routes = path.isEmpty ? routes : routes.grouped(Array(path))
-            if let route = content as? Route {
-                routes.add(route)
-            } else {
-                try routes.register(collection: content)
+        try await Application.testing(content: {
+            Group(middleware: foo) {
+                Route.testing(name: "A")
+                    .middleware(bar)
+                Route.testing(name: "B")
             }
+        }) { app in
+            try await app.testing(.GET, "/A", assertMiddleware: [foo, bar])
+            try await app.testing(.GET, "/B", assertMiddleware: [foo])
         }
     }
 }

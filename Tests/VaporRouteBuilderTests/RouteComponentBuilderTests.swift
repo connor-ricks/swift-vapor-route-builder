@@ -22,8 +22,8 @@
 
 import Testing
 import Vapor
-import XCTVapor
 @testable import VaporRouteBuilder
+import XCTVapor
 
 @Suite("RouteBuilder Tests") struct RouteComponentBuilderTests {
     @Test func test_resultBuilder_whenBuildBlockIsSingle_producesExpectedRoutes() async throws {
@@ -123,7 +123,7 @@ import XCTVapor
                 Route.testing(name: "false")
             }
         }) { app in
-            #expect(app.routes.all.count == 0)
+            #expect(app.routes.all.isEmpty)
         }
     }
 
@@ -151,6 +151,7 @@ import XCTVapor
         }
     }
 
+    // swiftlint:disable duplicate_conditions
     @Test func test_resultBuilder_whenBuildBlockIsEitherIfElseIf_producesExpectedRoutes() async throws {
         // Only 'if' path should exist.
         try await Application.testing(content: {
@@ -202,7 +203,7 @@ import XCTVapor
                 Route.testing(name: "elseIf")
             }
         }) { app in
-            #expect(app.routes.all.count == 0)
+            #expect(app.routes.all.isEmpty)
         }
 
         // Only 'else' path should exist.
@@ -219,6 +220,7 @@ import XCTVapor
             #expect(app.routes.all.count == 1)
         }
     }
+    // swiftlint:enable duplicate_conditions
 
     @Test func test_resultBuilder_whenBuildBlockIsOptionalIf_producesExpectedRoutes() async throws {
         // Only 'if' path should exist.
@@ -237,7 +239,7 @@ import XCTVapor
                 Route.testing(name: "true")
             }
         }) { app in
-            #expect(app.routes.all.count == 0)
+            #expect(app.routes.all.isEmpty)
         }
 
         // Only 'if' path should exist.
@@ -258,7 +260,7 @@ import XCTVapor
                 Route.testing(name: "\(optionalDoesNotExist)")
             }
         }) { app in
-            #expect(app.routes.all.count == 0)
+            #expect(app.routes.all.isEmpty)
         }
 
         // Only 'if' path should exist.
@@ -280,7 +282,7 @@ import XCTVapor
                 Route.testing(name: "one")
             }
         }) { app in
-            #expect(app.routes.all.count == 0)
+            #expect(app.routes.all.isEmpty)
         }
     }
 

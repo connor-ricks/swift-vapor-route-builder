@@ -52,14 +52,14 @@ public enum RouteBuilder {
     public static func buildEither<TrueContent: RouteComponent, FalseContent: RouteComponent>(
         first content: TrueContent
     ) -> Conditional<TrueContent, FalseContent> {
-        return Conditional.first(content)
+        Conditional.first(content)
     }
 
     @inlinable
     static func buildEither<TrueContent: RouteComponent, FalseContent: RouteComponent>(
         second content: FalseContent
     ) -> Conditional<TrueContent, FalseContent> {
-        return Conditional.second(content)
+        Conditional.second(content)
     }
 
     // MARK: buildOptional

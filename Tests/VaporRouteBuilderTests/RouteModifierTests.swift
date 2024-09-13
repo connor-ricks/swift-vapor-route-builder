@@ -1,3 +1,4 @@
+//
 // MIT License
 //
 // Copyright (c) 2024 Connor Ricks
@@ -25,33 +26,40 @@ import Vapor
 @testable import VaporRouteBuilder
 import XCTVapor
 
-@Suite("AnyRouteComponent Tests") struct AnyRouteComponentTests {
-    @Test func test_anyRouteComponent_withSimpleComponent_producesExpectedRoutes() async throws {
+@Suite("RouteModifier Tests") struct RouteModifierTests {
+    @Test func test_routeModifier_whenAddedToContent_matchesExpectations() async throws {
+        struct AddBModifier: RouteModifier {
+            func body(content: RouteContent) -> some RouteComponent {
+                Group {
+                    Route.testing(name: "B")
+                    content
+                }
+            }
+        }
+
         try await Application.testing(content: {
-            Route.testing(name: "A").eraseToAnyRouteComponent()
+            Route.testing(name: "A")
+                .modifier(AddBModifier())
         }) { app in
             try await app.testing(.GET, "/A")
-            #expect(app.routes.all.count == 1)
+            try await app.testing(.GET, "/B")
+            #expect(app.routes.all.count == 2)
         }
-    }
 
-    @Test func test_anyRouteComponent_withComplexComponent_producesExpectedRoutes() async throws {
-        try await Application.testing(content: {
-            Group(path: "users") {
-                Group(path: ":user") {
-                    Route.testing(name: "profile").eraseToAnyRouteComponent()
-                    Route.testing(name: "settings").eraseToAnyRouteComponent()
+        struct AddParentModifier: RouteModifier {
+            func body(content: RouteContent) -> some RouteComponent {
+                Group(path: "parent") {
+                    content
                 }
+            }
+        }
 
-                Route.testing(name: "online")
-                Route.testing(name: "top")
-            }.eraseToAnyRouteComponent()
+        try await Application.testing(content: {
+            Route.testing(name: "foo")
+                .modifier(AddParentModifier())
         }) { app in
-            try await app.testing(.GET, "/users/1/profile")
-            try await app.testing(.GET, "/users/2/settings")
-            try await app.testing(.GET, "/users/online")
-            try await app.testing(.GET, "/users/top")
-            #expect(app.routes.all.count == 4)
+            try await app.testing(.GET, "/parent/foo")
+            #expect(app.routes.all.count == 1)
         }
     }
 }

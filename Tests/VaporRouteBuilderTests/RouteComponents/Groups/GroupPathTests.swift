@@ -22,8 +22,8 @@
 
 import Testing
 import Vapor
-import XCTVapor
 @testable import VaporRouteBuilder
+import XCTVapor
 
 @Suite("Group Path Tests") struct GroupPathTests {
     @Test func test_variadicGroupPath_withSinglePath_producesExpectedRoutes() async throws {
@@ -54,7 +54,7 @@ import XCTVapor
         try await Application.testing(content: {
             Group(path: ["A", "B", "C"]) {}
         }) { app in
-            #expect(app.routes.all.count == 0)
+            #expect(app.routes.all.isEmpty)
         }
     }
 
@@ -86,7 +86,7 @@ import XCTVapor
         try await Application.testing(content: {
             Group(path: ["A", "B", "C"]) {}
         }) { app in
-            #expect(app.routes.all.count == 0)
+            #expect(app.routes.all.isEmpty)
         }
     }
 }

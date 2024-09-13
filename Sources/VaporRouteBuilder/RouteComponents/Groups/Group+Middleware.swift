@@ -23,7 +23,7 @@
 import Vapor
 
 extension Group {
-    /// Creates a group of content under a path.
+    /// Groups content under the provided middleware.
     ///
     /// See ``Group.init(middleware:content:)`` for more info.
     public struct Middleware<Middlewares: Collection<any Vapor.Middleware>>: RouteComponent {

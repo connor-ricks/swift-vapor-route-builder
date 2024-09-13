@@ -61,7 +61,6 @@ extension Route {
                 _ = try await request.eventLoop.flatSubmit {
                     request.body.collect(max: max?.value ?? request.application.routes.defaultMaxBodySize.value)
                 }.get()
-
             }
             return try await closure(request).encodeResponse(for: request)
         }

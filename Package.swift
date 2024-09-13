@@ -27,13 +27,15 @@ import PackageDescription
 let package = Package(
     name: "swift-vapor-route-builder",
     platforms: [
-        .macOS(.v15)
+        .macOS(.v10_15)
     ],
     products: [
         .library(name: "VaporRouteBuilder", targets: ["VaporRouteBuilder"])
     ],
     dependencies: [
-        .package(url: "https://github.com/vapor/vapor.git", from: "4.105.2")
+        .package(url: "https://github.com/vapor/vapor.git", from: "4.105.2"),
+        // TODO: <Connor> This can probably be removed once Swift 6 is officially released.
+        .package(url: "https://github.com/apple/swift-testing", from: "0.12.0"),
     ],
     targets: [
         .target(name: "VaporRouteBuilder", dependencies: [.product(name: "Vapor", package: "vapor")]),
@@ -41,8 +43,30 @@ let package = Package(
             name: "VaporRouteBuilderTests",
             dependencies: [
                 "VaporRouteBuilder",
-                .product(name: "XCTVapor", package: "vapor")
+                .product(name: "XCTVapor", package: "vapor"),
             ]
-        )
+        ),
     ]
 )
+
+#if os(macOS) // Only add SwiftLint on supported platforms.
+package.dependencies.append(contentsOf: [
+    .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", from: "0.56.2"),
+])
+#endif
+
+for target in package.targets where target.type != .system {
+    #if os(macOS) // Only add SwiftLint on supported platforms.
+    target.plugins = target.plugins ?? []
+    target.plugins?.append(contentsOf: [
+        .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")
+    ])
+    #endif
+
+    if case .test = target.type {
+        target.dependencies.append(contentsOf: [
+            // TODO: <Connor> This can probably be removed once Swift 6 is officially released.
+            .product(name: "Testing", package: "swift-testing"),
+        ])
+    }
+}

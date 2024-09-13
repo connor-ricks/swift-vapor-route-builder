@@ -22,8 +22,8 @@
 
 import Testing
 import Vapor
-import XCTVapor
 @testable import VaporRouteBuilder
+import XCTVapor
 
 @Suite("Group Middleware Tests") struct GroupMiddlewareTests {
     @Test func test_variadicGroupMiddleware_withSingleMiddleware_producesExpectedRoutes() async throws {
@@ -83,7 +83,7 @@ import XCTVapor
         try await Application.testing(content: {
             Group(middleware: foo) {}
         }) { app in
-            #expect(app.routes.all.count == 0)
+            #expect(app.routes.all.isEmpty)
         }
     }
 
@@ -144,7 +144,7 @@ import XCTVapor
         try await Application.testing(content: {
             Group(middleware: [foo]) {}
         }) { app in
-            #expect(app.routes.all.count == 0)
+            #expect(app.routes.all.isEmpty)
         }
     }
 }

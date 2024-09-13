@@ -22,8 +22,8 @@
 
 import Testing
 import Vapor
-import XCTVapor
 @testable import VaporRouteBuilder
+import XCTVapor
 
 @Suite("Group Tests") struct GroupTests {
     @Test func test_group_withRoutes_producesExpectedRoutes() async throws {
@@ -43,7 +43,7 @@ import XCTVapor
         try await Application.testing(content: {
             Group {}
         }) { app in
-            #expect(app.routes.all.count == 0)
+            #expect(app.routes.all.isEmpty)
         }
     }
 }

@@ -23,8 +23,8 @@
 
 import Testing
 import Vapor
-import XCTVapor
 @testable import VaporRouteBuilder
+import XCTVapor
 
 @Suite("RouteModifier Tests") struct RouteModifierTests {
     @Test func test_routeModifier_whenAddedToContent_matchesExpectations() async throws {

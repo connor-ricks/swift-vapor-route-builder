@@ -22,8 +22,8 @@
 
 import Testing
 import Vapor
-import XCTVapor
 @testable import VaporRouteBuilder
+import XCTVapor
 
 @Suite("Route Tests") struct RouteTests {
     @Test func test_route_producesExpectedRoute() async throws {

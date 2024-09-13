@@ -22,15 +22,13 @@
 
 import Testing
 import Vapor
-import XCTVapor
 @testable import VaporRouteBuilder
+import XCTVapor
 
 @Suite("Tuple Tests") struct TupleTests {
     @Test func test_tuple_withOneComponent_producesExpectedRoutes() async throws {
         try await Application.testing(content: {
-            Tuple(content:
-                Route.testing(name: "A")
-            )
+            Tuple(content: Route.testing(name: "A"))
         }) { app in
             try await app.testing(.GET, "/A")
             #expect(app.routes.all.count == 1)

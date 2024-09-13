@@ -22,8 +22,8 @@
 
 import Testing
 import Vapor
-import XCTVapor
 @testable import VaporRouteBuilder
+import XCTVapor
 
 @Suite("AnyRouteComponent Tests") struct AnyRouteComponentTests {
     @Test func test_anyRouteComponent_withSimpleComponent_producesExpectedRoutes() async throws {

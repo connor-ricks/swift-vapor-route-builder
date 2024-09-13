@@ -22,10 +22,11 @@
 
 import Testing
 import Vapor
-import XCTVapor
 @testable import VaporRouteBuilder
+import XCTVapor
 
 @Suite("HTTPMethodTests Tests") struct HTTPMethodTests {
+    // swiftlint:disable force_cast
     @Test func test() async throws {
         let get = GET("A") { _ in "" }.body as! Route
         #expect(get.method == .GET)
@@ -47,4 +48,5 @@ import XCTVapor
         #expect(delete.method == .DELETE)
         #expect(delete.path == ["A"])
     }
+    // swiftlint:enable force_cast
 }

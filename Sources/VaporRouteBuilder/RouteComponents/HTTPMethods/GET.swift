@@ -43,6 +43,36 @@ public struct GET: RouteComponent {
     ///   - strategy: The body streaming strategy.
     ///   - use: The closure handler for incoming requests.
     @inlinable
+    public init<Response: ResponseEncodable>(
+        _ path: PathComponent...,
+        strategy: HTTPBodyStreamStrategy = .collect,
+        use: @Sendable @escaping (Request) throws -> Response
+    ) {
+        self.init(path, strategy: strategy, use: use)
+    }
+
+    /// Creates a `Route` with the `GET` HTTP Method at the provided path.
+    ///
+    /// - Parameters:
+    ///   - path: The path of the route.
+    ///   - strategy: The body streaming strategy.
+    ///   - use: The closure handler for incoming requests.
+    @inlinable
+    public init<Response: AsyncResponseEncodable>(
+        _ path: PathComponent...,
+        strategy: HTTPBodyStreamStrategy = .collect,
+        use: @Sendable @escaping (Request) async throws -> Response
+    ) {
+        self.init(path, strategy: strategy, use: use)
+    }
+
+    /// Creates a `Route` with the `GET` HTTP Method at the provided path.
+    ///
+    /// - Parameters:
+    ///   - path: The path of the route.
+    ///   - strategy: The body streaming strategy.
+    ///   - use: The closure handler for incoming requests.
+    @inlinable
     public init<Path: Collection, Response: ResponseEncodable>(
         _ path: Path,
         strategy: HTTPBodyStreamStrategy = .collect,
@@ -63,36 +93,6 @@ public struct GET: RouteComponent {
         strategy: HTTPBodyStreamStrategy = .collect,
         use: @Sendable @escaping (Request) async throws -> Response
     ) where Path.Element == PathComponent {
-        self.route = Route(.GET, path, body: strategy, use: use)
-    }
-
-    /// Creates a `Route` with the `GET` HTTP Method at the provided path.
-    ///
-    /// - Parameters:
-    ///   - path: The path of the route.
-    ///   - strategy: The body streaming strategy.
-    ///   - use: The closure handler for incoming requests.
-    @inlinable
-    public init<Response: ResponseEncodable>(
-        _ path: PathComponent...,
-        strategy: HTTPBodyStreamStrategy = .collect,
-        use: @Sendable @escaping (Request) throws -> Response
-    ) {
-        self.route = Route(.GET, path, body: strategy, use: use)
-    }
-
-    /// Creates a `Route` with the `GET` HTTP Method at the provided path.
-    ///
-    /// - Parameters:
-    ///   - path: The path of the route.
-    ///   - strategy: The body streaming strategy.
-    ///   - use: The closure handler for incoming requests.
-    @inlinable
-    public init<Response: AsyncResponseEncodable>(
-        _ path: PathComponent...,
-        strategy: HTTPBodyStreamStrategy = .collect,
-        use: @Sendable @escaping (Request) async throws -> Response
-    ) {
         self.route = Route(.GET, path, body: strategy, use: use)
     }
 

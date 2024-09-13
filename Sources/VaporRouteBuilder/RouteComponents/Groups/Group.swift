@@ -93,7 +93,7 @@ public struct Group<Content: RouteComponent>: RouteComponent {
         path: PathComponent...,
         @RouteBuilder content: () -> C
     ) where Content == Group<C>.Path<[PathComponent]> {
-        self.content = Content(path: path, content: content)
+        self.init(path: path, content: content)
     }
 
     /// Creates a group, nesting the provided `content` underneath the provided `path`.
@@ -146,7 +146,7 @@ public struct Group<Content: RouteComponent>: RouteComponent {
         middleware: any Vapor.Middleware...,
         @RouteBuilder content: () -> C
     ) where Content == Group<C>.Middleware<[any Vapor.Middleware]> {
-        self.content = Content(middleware: middleware, content: content)
+        self.init(middleware: middleware, content: content)
     }
 
     /// Creates a group, nested the provided `content` underneath the provided `middleware`.

@@ -43,8 +43,7 @@ extension Group {
             path: PathComponent...,
             @RouteBuilder content: () -> Content
         ) where Path == [PathComponent] {
-            self.path = path
-            self.content = content()
+            self.init(path: path, content: content)
         }
 
         @inlinable

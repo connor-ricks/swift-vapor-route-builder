@@ -43,8 +43,7 @@ extension Group {
             middleware: any Vapor.Middleware...,
             @RouteBuilder content: () -> Content
         ) where Middlewares == [any Vapor.Middleware] {
-            self.middleware = middleware
-            self.content = content()
+            self.init(middleware: middleware, content: content)
         }
 
         @inlinable

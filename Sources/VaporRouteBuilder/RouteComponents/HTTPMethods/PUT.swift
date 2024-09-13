@@ -43,36 +43,6 @@ public struct PUT: RouteComponent {
     ///   - strategy: The body streaming strategy.
     ///   - use: The closure handler for incoming requests.
     @inlinable
-    public init<Path: Collection, Response: ResponseEncodable>(
-        _ path: Path,
-        strategy: HTTPBodyStreamStrategy = .collect,
-        use: @Sendable @escaping (Request) throws -> Response
-    ) where Path.Element == PathComponent {
-        self.route = Route(.PUT, path, body: strategy, use: use)
-    }
-
-    /// Creates a `Route` with the `PUT` HTTP Method at the provided path.
-    ///
-    /// - Parameters:
-    ///   - path: The path of the route.
-    ///   - strategy: The body streaming strategy.
-    ///   - use: The closure handler for incoming requests.
-    @inlinable
-    public init<Path: Collection, Response: AsyncResponseEncodable>(
-        _ path: Path,
-        strategy: HTTPBodyStreamStrategy = .collect,
-        use: @Sendable @escaping (Request) async throws -> Response
-    ) where Path.Element == PathComponent {
-        self.route = Route(.PUT, path, body: strategy, use: use)
-    }
-
-    /// Creates a `Route` with the `PUT` HTTP Method at the provided path.
-    ///
-    /// - Parameters:
-    ///   - path: The path of the route.
-    ///   - strategy: The body streaming strategy.
-    ///   - use: The closure handler for incoming requests.
-    @inlinable
     public init<Response: ResponseEncodable>(
         _ path: PathComponent...,
         strategy: HTTPBodyStreamStrategy = .collect,
@@ -93,6 +63,36 @@ public struct PUT: RouteComponent {
         strategy: HTTPBodyStreamStrategy = .collect,
         use: @Sendable @escaping (Request) async throws -> Response
     ) {
+        self.init(path, strategy: strategy, use: use)
+    }
+
+    /// Creates a `Route` with the `PUT` HTTP Method at the provided path.
+    ///
+    /// - Parameters:
+    ///   - path: The path of the route.
+    ///   - strategy: The body streaming strategy.
+    ///   - use: The closure handler for incoming requests.
+    @inlinable
+    public init<Path: Collection, Response: ResponseEncodable>(
+        _ path: Path,
+        strategy: HTTPBodyStreamStrategy = .collect,
+        use: @Sendable @escaping (Request) throws -> Response
+    ) where Path.Element == PathComponent {
+        self.route = Route(.PUT, path, body: strategy, use: use)
+    }
+
+    /// Creates a `Route` with the `PUT` HTTP Method at the provided path.
+    ///
+    /// - Parameters:
+    ///   - path: The path of the route.
+    ///   - strategy: The body streaming strategy.
+    ///   - use: The closure handler for incoming requests.
+    @inlinable
+    public init<Path: Collection, Response: AsyncResponseEncodable>(
+        _ path: Path,
+        strategy: HTTPBodyStreamStrategy = .collect,
+        use: @Sendable @escaping (Request) async throws -> Response
+    ) where Path.Element == PathComponent {
         self.route = Route(.PUT, path, body: strategy, use: use)
     }
 

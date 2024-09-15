@@ -37,7 +37,8 @@ extension XCTApplicationTester {
         line: Int = #line,
         column: Int = #column,
         assertMiddleware middleware: [TestMiddleware] = [],
-        beforeRequest: @escaping (inout XCTHTTPRequest) async throws -> Void = { _ in }
+        beforeRequest: @escaping (inout XCTHTTPRequest) async throws -> Void = { _ in },
+        afterResponse: ((XCTHTTPResponse) async throws -> Void)? = nil
     ) async throws -> XCTApplicationTester {
         func test() async throws -> XCTApplicationTester {
             try await self.test(
@@ -48,7 +49,7 @@ extension XCTApplicationTester {
                 file: filePath,
                 line: UInt(line),
                 beforeRequest: beforeRequest,
-                afterResponse: { res async in
+                afterResponse: afterResponse ?? { res async in
                     #expect(
                         path == res.body.string,
                         sourceLocation: SourceLocation(

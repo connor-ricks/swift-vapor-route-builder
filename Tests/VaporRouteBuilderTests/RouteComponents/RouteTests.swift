@@ -34,4 +34,43 @@ import XCTVapor
             #expect(app.routes.all.count == 1)
         }
     }
+
+    @Test func test_route_asChildOfGroupWithoutPath_producesRouteMatchingParent() async throws {
+        try await Application.testing(content: {
+            Group("A") {
+                DELETE { _ in "delete" }
+                GET { _ in "get" }
+                PATCH { _ in "patch" }
+                POST { _ in "post" }
+                PUT { _ in "put" }
+                Route(.OPTIONS) { _ in "options" }
+            }
+        }) { app in
+            try await app.testing(.DELETE, "/A", afterResponse: { res in
+                #expect(res.body.string == "delete")
+            })
+
+            try await app.testing(.GET, "/A", afterResponse: { res in
+                #expect(res.body.string == "get")
+            })
+
+            try await app.testing(.PATCH, "/A", afterResponse: { res in
+                #expect(res.body.string == "patch")
+            })
+
+            try await app.testing(.POST, "/A", afterResponse: { res in
+                #expect(res.body.string == "post")
+            })
+
+            try await app.testing(.PUT, "/A", afterResponse: { res in
+                #expect(res.body.string == "put")
+            })
+
+            try await app.testing(.OPTIONS, "/A", afterResponse: { res in
+                #expect(res.body.string == "options")
+            })
+
+            #expect(app.routes.all.count == 6)
+        }
+    }
 }

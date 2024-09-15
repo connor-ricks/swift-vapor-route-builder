@@ -27,11 +27,13 @@ You can use `Group` to help organize your routes and cut down on the repetitiven
 app.register {
     Group("api", "v1") {
         Group("movies") {
+            GET { ... }
             GET("latest") { ... }
             GET("popular") { ... }
             GET(":movie") { ... }
         }
         Group("books") {
+            GET { ... }
             GET("new") { ... }
             GET("trending") { ... }
             GET(":book") { ... }
@@ -68,17 +70,16 @@ If you have more than one middleware... no worries, `.middleware(_:)` accepts a 
 ```swift
 Group {
     GET("foo") { ... }
-    Group {
-        GET("bar") { ... }
-    }
-    .middleware(Authentication(), Validator())
+    GET("bar") { ... }
+        .middleware(Authentication(), Validator())
+        .middleware(Reporter())
 }
 .middleware(Logging())
 ```
 
-Remember that order matters here. Incoming requests will always execute middleware from top to bottom. So in the above example, the order of an incoming request would be as follows ➡️ `Logging`, `Authentication`, `Validator`. Outgoing respones will always execute middleware in the reverse order. ➡️ `Validator`, `Authentication`, `Logging`.
+Remember that order matters here. Incoming requests will always execute middleware from the top of the tree to the bottom. So in the above example, the order of an incoming request would be as follows ➡️ `Logging`, `Reporter`, `Authentication`, `Validator`. Outgoing respones will always execute middleware in the reverse order. ➡️ `Validator`, `Authentication`, `Reporter`, `Logging`.
 
-### Making Custom Route Components
+### Custom Route Components
 
 Often times, as your routes grow, a single large definition can become unwieldly and cumbersome to read and update. Organization of routes can be straightforward with `@RouteBuilder`
 
@@ -168,7 +169,6 @@ app.register {
 
 For existing vapor applications, it may be unreasonable or unwieldly to rewrite your entire routing stack in one go. You can start with replacing smaller sections of your route definitions by registering a `RouteComponent` on any `RoutesBuilder` in your application.
 
-
 ```swift
 let users = app.grouped("users")
 users.get(":user") { ... }
@@ -182,25 +182,16 @@ books.register {
 }
 ```
 
-### RouteModifiers
+### Route Metadata
 
-- Currently undocumented.
-
-## TODO
-
-- [Confirmed] Implement Websocket support
-- [Confirmed] Handle routes at the root of a RouteComponent.
+Vapor supports adding metadata to your routes. To add your own metadata to a route within a `@RouteBuilder`, make use of either the `.description(_:)` modifier or the `.userInfo(key:value:)` modifier.
 
 ```swift
-Group(":movie") {
-    ... How do we handle JUST ":movie"?
-    GET("credits") { ... }
-    GET("category") { ... }
+Group {
+    GET("hello") {
+        ...
+    }
+    .description("Says hello")
+    .userInfo(key: "isBeta", value: true)
 }
-```
-
-- [Maybe] Implement EnvironmentObject style support.
-- [Maybe] Implement Service support 
-- [Maybe] Route modifier for description.
-- [Maybe] Route modifier for caseInsensitive.
-- [Maybe] Route modifier for defaultMaxBodySize.
+``` 

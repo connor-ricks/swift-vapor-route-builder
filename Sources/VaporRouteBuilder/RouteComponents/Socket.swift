@@ -30,7 +30,7 @@ import Vapor
 /// Use `Socket` in a route builder to define a websocket connection at the specified path.
 ///
 /// ```swift
-/// Group(path: "api") {
+/// Group("api") {
 ///     Socket("foo") { ... }
 /// }
 /// ```
@@ -76,5 +76,5 @@ public struct Socket: RouteComponent {
 // MARK: - RouteComponents + Socket
 
 extension RouteComponents {
-    public typealias Socket = VaporRouteBuilder.Socket
+    public typealias Socket = VaporRouteBuilder.Socket // NB: Convenience type for alias discovery.
 }

@@ -35,11 +35,7 @@ import Vapor
 ///
 /// ```swift
 /// Group {
-///     Group(path: "authenticated") {
-///         Group(middleware: AuthenticatedMiddleware()) {
-///             ProfileRoute()
-///             SettingsRoute()
-///         }
+///     Group("authenticated") {
 ///         LoginRoute()
 ///         ForgotPasswordRoute()
 ///         ResetPasswordRoute()
@@ -80,5 +76,5 @@ public struct Tuple<each Content: RouteComponent>: RouteComponent {
 // MARK: - RouteComponents + Tuple
 
 extension RouteComponents {
-    public typealias Tuple<each C: RouteComponent> = VaporRouteBuilder.Tuple<repeat each C>
+    public typealias Tuple<each C: RouteComponent> = VaporRouteBuilder.Tuple<repeat each C> // NB: Convenience type for alias discovery.
 }

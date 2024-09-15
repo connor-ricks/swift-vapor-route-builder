@@ -23,6 +23,69 @@
 import Vapor
 
 extension Group {
+
+    // MARK: Initializers
+
+    /// Creates a group, nesting the provided `content` underneath the provided `path`.
+    ///
+    /// This can be useful when you have a series of endpoints that all exist under a given parent path.
+    /// For example, take an api that serves up content about books and movies. You might have the following endpoints...
+    ///
+    /// - `/movies/latest`
+    /// - `/movies/upcoming`
+    /// - `/books/latest`
+    /// - `/books/upcoming`
+    ///
+    /// ```swift
+    /// Group("movies") {
+    ///     Route("latest", on .GET) { ... }
+    ///     Route("upcoming", on .GET) { ... }
+    /// }
+    /// Group("books") {
+    ///     Route("latest", on .GET) { ... }
+    ///     Route("upcoming", on .GET) { ... }
+    /// }
+    /// ```
+    ///
+    @inlinable
+    public init<C: RouteComponent>(
+        _ path: PathComponent...,
+        @RouteBuilder content: () -> C
+    ) where Content == Group<C>.Path<[PathComponent]> {
+        self.init(path, content: content)
+    }
+
+    /// Creates a group, nesting the provided `content` underneath the provided `path`.
+    ///
+    /// This can be useful when you have a series of endpoints that all exist under a given parent path.
+    /// For example, take an api that serves up content about books and movies. You might have the following endpoints...
+    ///
+    /// - `/movies/latest`
+    /// - `/movies/upcoming`
+    /// - `/books/latest`
+    /// - `/books/upcoming`
+    ///
+    /// ```swift
+    /// Group("movies") {
+    ///     Route("latest", on .GET) { ... }
+    ///     Route("upcoming", on .GET) { ... }
+    /// }
+    /// Group("books") {
+    ///     Route("latest", on .GET) { ... }
+    ///     Route("upcoming", on .GET) { ... }
+    /// }
+    /// ```
+    ///
+    @inlinable
+    public init<C: RouteComponent, P: Collection<PathComponent>>(
+        _ path: P,
+        @RouteBuilder content: () -> C
+    ) where Content == Group<C>.Path<P> {
+        self.content = Content(path: path, content: content)
+    }
+
+    // MARK: Path
+
     /// Groups content under a provided path.
     ///
     /// See ``Group.init(path:content:)`` for more info.

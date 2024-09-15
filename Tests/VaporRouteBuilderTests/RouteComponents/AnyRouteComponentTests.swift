@@ -37,8 +37,8 @@ import XCTVapor
 
     @Test func test_anyRouteComponent_withComplexComponent_producesExpectedRoutes() async throws {
         try await Application.testing(content: {
-            Group(path: "users") {
-                Group(path: ":user") {
+            Group("users") {
+                Group(":user") {
                     Route.testing(name: "profile").eraseToAnyRouteComponent()
                     Route.testing(name: "settings").eraseToAnyRouteComponent()
                 }

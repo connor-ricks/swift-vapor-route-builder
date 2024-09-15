@@ -52,7 +52,7 @@ import XCTVapor
         try await Application.testing(content: {
             Tuple(content: (
                 Route.testing(name: "A"),
-                Group(path: "B") {
+                Group("B") {
                     Route.testing(name: "BB")
                 },
                 Route.testing(name: "C")

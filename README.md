@@ -25,13 +25,13 @@ You can use `Group` to help organize your routes and cut down on the repetitiven
 
 ```swift
 app.register {
-    Group(path: "api", "v1") {
-        Group(path: "movies") {
+    Group("api", "v1") {
+        Group("movies") {
             GET("latest") { ... }
             GET("popular") { ... }
             GET(":movie") { ... }
         }
-        Group(path: "books") {
+        Group("books") {
             GET("new") { ... }
             GET("trending") { ... }
             GET(":book") { ... }
@@ -40,20 +40,19 @@ app.register {
 }
 ```
 
-### Middleware Groups
+### Middleware
 
-Sometimes you may want to wrap certain routes in middleware. A common use case requiring middleware could be authentication. You have have some routes that require middleware, and others that do now. Adding middleware using `@RouteBuilder` is similar to wrapping routes in `Group(path:)`.
+Sometimes you may want to wrap certain routes in middleware. A common use case requiring middleware could be authentication. You have have some routes that require middleware, and others that do now. Adding middleware using `@RouteBuilder` is similar to adding view modifiers in SwiftUI.
 
 ```swift
 app.register {
-    Group(path: "api", "v1") {
-        Group(middleware: AuthenticationMiddleware()) {
-            Group(path: "profile") {
-                GET("favorites") { ... }
-                GET("friends") { ... }
-            }
+    Group("api", "v1") {
+        Group("profile") {
+            GET("favorites") { ... }
+            GET("friends") { ... }
         }
-        Group(path: "books") {
+        .middleware(AuthenticationMiddleware())
+        Group("books") {
             GET("new") { ... }
             GET("trending") { ... }
             GET(":book") { ... }
@@ -64,15 +63,17 @@ app.register {
 
 In the above example, you'll see that we've only wrapped our `/profile/*` endpoints in our `AuthenticationMiddleware`, while all of the `/book/*` endpoints have no middleware associated with them.
 
-If you have more than one middleware... no worries, `Group(middleware:)` accepts a variadic amount of middleware.
+If you have more than one middleware... no worries, `.middleware(_:)` accepts a variadic amount of middleware.
 
 ```swift
-Group(middleware: Logging()) {
+Group {
     GET("foo") { ... }
-    Group(middleware: Authentication(), Validator()) {
+    Group {
         GET("bar") { ... }
     }
+    .middleware(Authentication(), Validator())
 }
+.middleware(Logging())
 ```
 
 Remember that order matters here. Incoming requests will always execute middleware from top to bottom. So in the above example, the order of an incoming request would be as follows ➡️ `Logging`, `Authentication`, `Validator`. Outgoing respones will always execute middleware in the reverse order. ➡️ `Validator`, `Authentication`, `Logging`.
@@ -84,7 +85,7 @@ Often times, as your routes grow, a single large definition can become unwieldly
 ```swift
 struct MoviesUserCase: RouteComponent {
     var body: some RouteComponent {
-        Group(path: "movies") {
+        Group("movies") {
             MovieUseCase()
             GET("latest") { ... }
             GET("trending") { ... }
@@ -94,7 +95,7 @@ struct MoviesUserCase: RouteComponent {
 
 struct MovieUseCase: RouteComponent {
     var body: some RouteComponent {
-        Group(path: ":movie") {
+        Group(":movie") {
             GET("credits") { ... }
             GET("related") { ... }
         }
@@ -118,7 +119,7 @@ app.register {
 This package ships with a few conveniences for creating routes. You can use `GET`, `POST`, `PUT`, `PATCH`, and `DELETE` to cut down on the verbosity of defining your routes. If you need more fine grained control, you can always fall back to using a `Route` directly in your `@RouteBuilder`
 
 ```swift
-Group(path: "movies", ":movie") {
+Group("movies", ":movie") {
     Route(.OPTIONS, "credits") { ... }
 }
 ``` 
@@ -128,7 +129,7 @@ Group(path: "movies", ":movie") {
 Defining a websocket is as simple as using the `Socket` route component.
 
 ```swift
-Group(path: "api") {
+Group("api") {
     Socket("foo") { ... }
 }
 ```
@@ -151,7 +152,7 @@ app.register {
 ```swift
 app.register {
     for category in categories {
-        Group(path: "\(category.rawValue)") {
+        Group("\(category.rawValue)") {
             switch category {
             case .movies:
                 GET(":movie") { ... }
@@ -191,7 +192,7 @@ books.register {
 - [Confirmed] Handle routes at the root of a RouteComponent.
 
 ```swift
-Group(path: ":movie") {
+Group(":movie") {
     ... How do we handle JUST ":movie"?
     GET("credits") { ... }
     GET("category") { ... }

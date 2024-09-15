@@ -49,7 +49,7 @@ import XCTVapor
     @Test func test_resultBuilder_whenBuildBlockIsTupleOfDifferentType_producesExpectedRoutes() async throws {
         try await Application.testing(content: {
             Route.testing(name: "A")
-            Group(path: "B") {
+            Group("B") {
                 Route.testing(name: "BB")
             }
         }) { app in
@@ -61,19 +61,19 @@ import XCTVapor
 
     @Test func test_resultBuilder_whenBuildBlockIsLargeTupleOfDifferentTypes_producesExpectedRoutes() async throws {
         try await Application.testing(content: {
-            Group(path: "A") {
+            Group("A") {
                 Route.testing(name: "AA")
                 Route.testing(name: "AB")
                 Route.testing(name: "AC")
             }
             Route.testing(name: "B")
-            Group(path: "C") {
+            Group("C") {
                 Route.testing(name: "CA")
                 Route.testing(name: "CB")
                 Route.testing(name: "CC")
             }
             Route.testing(name: "D")
-            Group(path: "E") {
+            Group("E") {
                 Route.testing(name: "EA")
                 Route.testing(name: "EB")
                 Route.testing(name: "EC")
@@ -289,9 +289,9 @@ import XCTVapor
     @Test func test_resultBuilder_whenBuildBlockContainsCustomComponents_producesExpectedRoutes() async throws {
         struct UsersComponent: RouteComponent {
             var body: some RouteComponent {
-                Group(path: "users") {
+                Group("users") {
                     Route.testing(name: "all")
-                    Group(path: ":user") {
+                    Group(":user") {
                         Route.testing(name: "profile")
                         Route.testing(name: "favorites")
                     }
@@ -301,7 +301,7 @@ import XCTVapor
 
         struct MoviesComponent: RouteComponent {
             var body: some RouteComponent {
-                Group(path: "movies") {
+                Group("movies") {
                     Route.testing(name: "latest")
                     Route.testing(name: ":movie")
                 }

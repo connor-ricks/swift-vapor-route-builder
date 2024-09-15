@@ -30,7 +30,7 @@ import Vapor
 /// loops in a route component builder to automatically build a spread route component.
 ///
 /// ```swift
-/// Group(path: "api") {
+/// Group("api") {
 ///     for i in 0..<10 {
 ///         IndeRouteComponent(index: i)
 ///     }
@@ -68,5 +68,5 @@ public struct Spread<Content: Collection>: RouteComponent where Content.Element:
 // MARK: - RouteComponents + Spread
 
 extension RouteComponents {
-    public typealias Spread<C: Collection> = VaporRouteBuilder.Spread<C> where C.Element: RouteComponent
+    public typealias Spread<C: Collection> = VaporRouteBuilder.Spread<C> where C.Element: RouteComponent // NB: Convenience type for alias discovery.
 }

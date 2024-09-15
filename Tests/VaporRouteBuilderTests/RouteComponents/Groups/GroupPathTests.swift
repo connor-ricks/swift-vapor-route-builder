@@ -28,7 +28,7 @@ import XCTVapor
 @Suite("Group Path Tests") struct GroupPathTests {
     @Test func test_variadicGroupPath_withSinglePath_producesExpectedRoutes() async throws {
         try await Application.testing(content: {
-            Group(path: "A") {
+            Group("A") {
                 Route.testing(name: "B")
             }
         }) { app in
@@ -39,7 +39,7 @@ import XCTVapor
 
     @Test func test_variadicGroupPath_withMultiplePaths_producesExpectedRoutes() async throws {
         try await Application.testing(content: {
-            Group(path: "A", "B", "C") {
+            Group("A", "B", "C") {
                 Route.testing(name: "D")
                 Route.testing(name: "DD")
             }
@@ -52,7 +52,7 @@ import XCTVapor
 
     @Test func test_emptyVariadicGroupPath_withWithNoRoutes_producesNoRoutes() async throws {
         try await Application.testing(content: {
-            Group(path: ["A", "B", "C"]) {}
+            Group(["A", "B", "C"]) {}
         }) { app in
             #expect(app.routes.all.isEmpty)
         }
@@ -60,7 +60,7 @@ import XCTVapor
 
     @Test func test_collectionGroupPath_withSinglePath_producesExpectedRoutes() async throws {
         try await Application.testing(content: {
-            Group(path: ["A"]) {
+            Group(["A"]) {
                 Route.testing(name: "B")
             }
         }) { app in
@@ -71,7 +71,7 @@ import XCTVapor
 
     @Test func test_collectionGroupPath_withMultiplePaths_producesExpectedRoutes() async throws {
         try await Application.testing(content: {
-            Group(path: ["A", "B", "C"]) {
+            Group(["A", "B", "C"]) {
                 Route.testing(name: "D")
                 Route.testing(name: "DD")
             }
@@ -84,7 +84,7 @@ import XCTVapor
 
     @Test func test_emptyCollectionGroupPath_withWithNoRoutes_producesNoRoutes() async throws {
         try await Application.testing(content: {
-            Group(path: ["A", "B", "C"]) {}
+            Group(["A", "B", "C"]) {}
         }) { app in
             #expect(app.routes.all.isEmpty)
         }

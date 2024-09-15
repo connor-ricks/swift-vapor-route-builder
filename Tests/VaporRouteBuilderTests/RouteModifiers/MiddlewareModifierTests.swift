@@ -26,17 +26,18 @@ import Vapor
 @testable import VaporRouteBuilder
 import XCTVapor
 
-@Suite("RouteComponentMiddleware Tests") struct RouteComponentMiddlewareTests {
+@Suite("MiddlewareModifier Tests") struct MiddlewareModifierTests {
     @Test func test_middlewareModifier_whenAttached_doesCorrectlyWrap() async throws {
         let foo = TestMiddleware(name: "foo")
         let bar = TestMiddleware(name: "bar")
 
         try await Application.testing(content: {
-            Group(middleware: foo) {
+            Group {
                 Route.testing(name: "A")
                     .middleware(bar)
                 Route.testing(name: "B")
             }
+            .middleware(foo)
         }) { app in
             try await app.testing(.GET, "/A", assertMiddleware: [foo, bar])
             try await app.testing(.GET, "/B", assertMiddleware: [foo])

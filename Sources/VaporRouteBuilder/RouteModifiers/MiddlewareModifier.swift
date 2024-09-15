@@ -26,12 +26,12 @@ import Vapor
 // MARK: - MiddlewareModifier
 
 /// A route modifier that wraps its content in the provided middleware.
-private struct MiddlewareModifier: RouteModifier {
+private struct MiddlewareModifier<Middlewares: Collection<any Vapor.Middleware>>: RouteModifier {
 
     // MARK: Properties
 
     /// The middleware to add to the content.
-    let middleware: [Middleware]
+    let middleware: Middlewares
 
     // MARK: Body
 
@@ -47,6 +47,11 @@ private struct MiddlewareModifier: RouteModifier {
 extension RouteComponent {
     /// Modifies the route component by wrapping it in the provided `Middleware`.
     public func middleware(_ middleware: any Middleware...) -> some RouteComponent {
+        modifier(MiddlewareModifier(middleware: middleware))
+    }
+
+    /// Modifies the route component by wrapping it in the provided `Middleware`.
+    public func middleware<C: Collection<any Middleware>>(_ middleware: C) -> some RouteComponent {
         modifier(MiddlewareModifier(middleware: middleware))
     }
 }

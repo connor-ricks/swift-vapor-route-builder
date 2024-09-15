@@ -48,7 +48,7 @@ import XCTVapor
 
         struct AddParentModifier: RouteModifier {
             func body(content: RouteContent) -> some RouteComponent {
-                Group(path: "parent") {
+                Group("parent") {
                     content
                 }
             }

@@ -23,10 +23,37 @@
 import Vapor
 
 extension Group {
+
+    // MARK: Initializers
+
+    /// Creates a group, nesting the provided `content` underneath the provided `middleware`.
+    ///
+    /// > Note: Usage of `Group(middleware:)` is internal to the framework. Attaching middleware should be accomplished
+    /// by making use of the `.middleware(_:)` route modifier.
+    init<C: RouteComponent>(
+        middleware: any Vapor.Middleware...,
+        @RouteBuilder content: () -> C
+    ) where Content == Group<C>.Middleware<[any Vapor.Middleware]> {
+        self.init(middleware: middleware, content: content)
+    }
+
+    /// Creates a group, nesting the provided `content` underneath the provided `middleware`.
+    ///
+    /// > Note: Usage of `Group(middleware:)` is internal to the framework. Attaching middleware should be accomplished
+    /// by making use of the `.middleware(_:)` route modifier.
+    init<C: RouteComponent, M: Collection<any Vapor.Middleware>>(
+        middleware: M,
+        @RouteBuilder content: () -> C
+    ) where Content == Group<C>.Middleware<M> {
+        self.content = Content(middleware: middleware, content: content)
+    }
+
+    // MARK: Middleware
+
     /// Groups content under the provided middleware.
     ///
     /// See ``Group.init(middleware:content:)`` for more info.
-    public struct Middleware<Middlewares: Collection<any Vapor.Middleware>>: RouteComponent {
+    struct Middleware<Middlewares: Collection<any Vapor.Middleware>>: RouteComponent {
 
         // MARK: Properties
 
@@ -39,7 +66,7 @@ extension Group {
         // MARK: Initializers
 
         @inlinable
-        public init(
+        init(
             middleware: any Vapor.Middleware...,
             @RouteBuilder content: () -> Content
         ) where Middlewares == [any Vapor.Middleware] {
@@ -47,7 +74,7 @@ extension Group {
         }
 
         @inlinable
-        public init(
+        init(
             middleware: Middlewares,
             @RouteBuilder content: () -> Content
         ) {
@@ -57,7 +84,7 @@ extension Group {
 
         // MARK: Boot
 
-        public func boot(routes: any RoutesBuilder) throws {
+        func boot(routes: any RoutesBuilder) throws {
             let routes = routes.grouped(Array(middleware))
             if let route = content as? Route {
                 routes.add(route)

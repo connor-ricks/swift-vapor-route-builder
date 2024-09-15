@@ -123,6 +123,16 @@ Group(path: "movies", ":movie") {
 }
 ``` 
 
+### Websockets
+
+Defining a websocket is as simple as using the `Socket` route component.
+
+```swift
+Group(path: "api") {
+    Socket("foo") { ... }
+}
+```
+
 ### Expressions & Logic
 
 `@ResultBuilder` supports a wide variety of the available result builder syntax.

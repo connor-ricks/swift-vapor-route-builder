@@ -25,6 +25,16 @@ import Vapor
 
 // MARK: - Socket
 
+/// A route component that defines a websocket at a given path.
+///
+/// Use `Socket` in a route builder to define a websocket connection at the specified path.
+///
+/// ```swift
+/// Group(path: "api") {
+///     Socket("foo") { ... }
+/// }
+/// ```
+/// 
 public struct Socket: RouteComponent {
 
     // MARK: Properties
@@ -61,4 +71,10 @@ public struct Socket: RouteComponent {
     public var body: some RouteComponent {
         route
     }
+}
+
+// MARK: - RouteComponents + Socket
+
+extension RouteComponents {
+    public typealias Socket = VaporRouteBuilder.Socket
 }

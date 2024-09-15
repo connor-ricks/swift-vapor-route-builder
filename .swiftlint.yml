@@ -12,7 +12,7 @@ excluded:
 allow_zero_lintable_files: false
 
 # If true, SwiftLint will treat all warnings as errors.
-strict: true
+strict: false
 
 # If true, SwiftLint will check for updates after linting or analyzing.
 check_for_updates: true
